@@ -10,8 +10,9 @@ api = Api(app)
 
 
 class CurrencyService(Resource):
-    url = ''
-    api_key = ''
+    def __init__(self):
+        self.__get_configuration()
+        self.cc = Convertor(self.url, self.api_key)
 
     def __get_configuration(self):
         with open("config/config.json") as json_config:
@@ -20,9 +21,7 @@ class CurrencyService(Resource):
             self.api_key = config["externalService"]["apikey"]
 
     def get(self):
-        self.__get_configuration()
-        cc = Convertor(self.url, self.api_key)
-        return cc.get_list()
+        return self.cc.get_list()
 
 
 api.add_resource(CurrencyService, '/list')
