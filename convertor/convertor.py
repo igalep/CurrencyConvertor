@@ -2,7 +2,7 @@ import requests as req
 import json
 import pprint
 
-class Currency_convertor:
+class Convertor:
     rates = {}
     def __init__(self, url , api_key):
         self.url = url
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         url = config["externalService"]["url"]
         api_key = config["externalService"]["apikey"]
 
-        cc = Currency_convertor(url, api_key)
+        cc = Convertor(url, api_key)
         data = cc.get_list()
 
         pprint.pprint(data)
