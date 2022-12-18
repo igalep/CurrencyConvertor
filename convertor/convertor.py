@@ -6,14 +6,20 @@ import pprint
 class Convertor:
     rates = {}
 
-    def __init__(self, url, api_key):
+    def __init__(self, url, api_key, route):
         self.url = url
         self.api_key = api_key
+        self.route = route
 
     def get_list(self):
-        ROUTE = '/list'
         headers = {"apikey": self.api_key}
-        response = req.get('http://' + self.url + ROUTE, headers=headers)
+        response = req.get('http://' + self.url + self.route, headers=headers)
+        return response.json()
+
+    def get_live(self, source, currencies):
+        headers = {"apikey": self.api_key}
+        params = {"source": source, "currencies": currencies}
+        response = req.get('http://' + self.url + self.route, headers=headers, params=params)
         return response.json()
 
 
