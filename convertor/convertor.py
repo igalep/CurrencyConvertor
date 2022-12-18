@@ -2,19 +2,19 @@ import requests as req
 import json
 import pprint
 
+
 class Convertor:
     rates = {}
-    def __init__(self, url , api_key):
+
+    def __init__(self, url, api_key):
         self.url = url
         self.api_key = api_key
 
     def get_list(self):
         ROUTE = '/list'
-        headers = {"apikey" : self.api_key}
+        headers = {"apikey": self.api_key}
         response = req.get('http://' + self.url + ROUTE, headers=headers)
         return response.json()
-
-
 
 
 if __name__ == "__main__":
