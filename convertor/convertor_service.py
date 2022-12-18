@@ -9,23 +9,42 @@ app = fl("CurrencyService")
 api = Api(app)
 
 
-class CurrencyService(Resource):
-    url = ''
-    api_key = ''
+def get_configuration():
+    with open("config/config.json") as json_config:
+        config = json.load(json_config)
+        global url, api_key
+        url = config["externalService"]["url"]
+        api_key = config["externalService"]["apikey"]
 
-    def __get_configuration(self):
-        with open("config/config.json") as json_config:
-            config = json.load(json_config)
-            self.url = config["externalService"]["url"]
-            self.api_key = config["externalService"]["apikey"]
+
+get_configuration()
+connection_tuple = (url, api_key)
+
+
+class CurrencyServiceList(Resource):
+    ROUTE = '/list'
+
+    def __init__(self):
+        self.cc_list = Convertor(connection_tuple[0], connection_tuple[1], CurrencyServiceList.ROUTE)
 
     def get(self):
-        self.__get_configuration()
-        cc = Convertor(self.url, self.api_key)
-        return cc.get_list()
+        return self.cc_list.get_list()
 
 
-api.add_resource(CurrencyService, '/list')
+class CurrencyServiceLive(Resource):
+    ROUTE = '/live'
+
+    def __init__(self):
+        self.source = "USD"
+        self.currencies = "ILS%2CEUR"
+        self.cc_live = Convertor(connection_tuple[0], connection_tuple[1], CurrencyServiceLive.ROUTE)
+
+    def get(self):
+        return self.cc_live.get_live(self.source, self.currencies)
+
+
+api.add_resource(CurrencyServiceList, CurrencyServiceList.ROUTE)
+api.add_resource(CurrencyServiceLive, CurrencyServiceLive.ROUTE)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8001)
